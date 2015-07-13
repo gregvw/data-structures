@@ -8,7 +8,7 @@ struct Node {
   KeyType key;
   Node* left;
   Node* right;
-  Node(const KeyType &k) : key(k), left(NULL), right(NULL) {}     
+  Node(const KeyType &k) : key(k), left(nullptr), right(nullptr) {}     
 };
 
 
@@ -21,12 +21,12 @@ class BSTree {
     typedef Node<KeyType> NodeType;
     typedef NodeType*     NodePtr;
 
-    BSTree() : root(NULL), count(0) {}
+    BSTree() : root(nullptr), count(0) {}
     virtual ~BSTree() { DestroyTree(root);} 
 
 
     void Insert(const KeyType &key) {
-      if(root != NULL)
+      if(root != nullptr)
         Insert(key, root);
       else {
         root = new NodeType(key);
