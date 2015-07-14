@@ -1,22 +1,22 @@
-#include<iostream>
-#include"bst.hpp"
+#include <iostream>
+#include "bst.hpp"
 
 int main(int argc, char *argv[]) {
 
   BSTree<int> tree;
 
-  tree.Insert(15);
-  tree.Insert(12);
-  tree.Insert(9);
-  tree.Insert(23);
-  tree.Insert(45);
-  tree.Insert(7);
+  tree.insert(15);
+  tree.insert(12);
+  tree.insert(9);
+  tree.insert(23);
+  tree.insert(45);
+  tree.insert(7);
 
-  tree.Remove(45);
+  tree.print();
+  std::cout << "Tree contains " << tree.size() << " nodes" << std::endl; 
 
-  tree.Print();
-
-
-  std::cout << "Tree contains " << tree.Size() << " nodes" << std::endl; 
+  tree.remove(45);
+  tree.print();
+  std::cout << "Tree contains " << tree.size() << " nodes" << std::endl; 
 
 }

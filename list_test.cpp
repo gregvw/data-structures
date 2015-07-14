@@ -4,12 +4,16 @@ int main(int argc, char *argv[]) {
 
   LinkedList<int> list;
 
-  list.Add(5);
-  list.Add(3);
-  list.Add(9);
-  list.Add(4);
-  list.Add(7);
-  list.Remove(3);
-  list.Print();
-  std::cout << "The list has " << list.Size() << " nodes" << std::endl;
+  list.add(5);
+  list.add(3);
+  list.add(9);
+  list.add(4);
+  list.add(7);
+  list.reverse();
+  list.print();
+  
+  std::cout << "The list has " << list.size() << " nodes" << std::endl;
+  std::cout << "The smallest element is " << list.getMin() << std::endl;
+  std::cout << "The largest element is " << list.getMax() << std::endl;
+
 }

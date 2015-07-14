@@ -1,7 +1,7 @@
 #ifndef BST_HPP
 #define BST_HPP
 
-#include<cstddef>
+#include "LinkedList.hpp"
 
 template<class KeyType>
 struct Node {
@@ -21,72 +21,85 @@ class BSTree {
     typedef Node<KeyType> NodeType;
     typedef NodeType*     NodePtr;
 
-    BSTree() : root(nullptr), count(0) {}
-    virtual ~BSTree() { DestroyTree(root);} 
+    BSTree() : root(nullptr), numberOfNodes(0) {}
+    virtual ~BSTree() { destroyTree(root);} 
 
 
-    void Insert(const KeyType &key) {
+    void insert(const KeyType &key) {
       if(root != nullptr)
-        Insert(key, root);
+        insert(key, root);
       else {
         root = new NodeType(key);
-        ++count;
+        ++numberOfNodes;
       }
+    } // Insert() 
+
+    void remove(const KeyType &key) {
+
+      remove(key, root);  
+
+    } // Remove()
+
+
+    NodePtr search(const KeyType &key) {
+
+      return search(key,root);
+
+    } // Search()        
+
+
+    void print() {
+
+      print(root);
+
+    } // print()    
+
+
+    unsigned size() {
+
+      return numberOfNodes;
+
+    } // Size()
+
+
+    KeyType getMin() {
+
+      return getMin(root); 
+
     } 
-
-    void Remove(const KeyType &key) {
-
-      Remove(key, root);  
-    }
-
-    NodePtr Search(const KeyType &key) {
-      return Search(key,root);
-    }        
-
-    void Print() {
-      Print(root);
-    }    
-
-    unsigned Size() {
-      return count;
-    }
-
-    KeyType FindSmallest() {
-      return FindSmallest(root); 
-    }
 
   private:
     NodePtr root;
-    unsigned count;
+    unsigned numberOfNodes;
 
-    void DestroyTree(NodePtr leaf) {
+    void destroyTree(NodePtr leaf) {
       if(leaf != nullptr) {
-        DestroyTree(leaf->left);
-        DestroyTree(leaf->right);
+        destroyTree(leaf->left);
+        destroyTree(leaf->right);
         delete leaf;
-        --count;
+        --numberOfNodes;
       }
     } 
 
-    void Insert(const KeyType &key, NodePtr leaf) {
+    void insert(const KeyType &key, NodePtr leaf) {
       if(key < leaf->key) {
         if(leaf->left != nullptr)
-          Insert(key,leaf->left);
+          insert(key,leaf->left);
         else {
           leaf->left = new NodeType(key);
-          ++count;
+          ++numberOfNodes;
         }
       } else if(key > leaf->key) {
         if(leaf->right != nullptr) 
-          Insert(key, leaf->right);
+          insert(key, leaf->right);
         else {
           leaf->right = new NodeType(key);
-          ++count;
+          ++numberOfNodes;
         } 
       } 
     }    
 
-    NodePtr Search(const KeyType &key, NodePtr leaf) {
+    NodePtr search(const KeyType &key, NodePtr leaf) {
       if(leaf != nullptr) {
         if(key == leaf->key)
           return leaf;
@@ -97,26 +110,26 @@ class BSTree {
       } else return nullptr;
     }
 
-    void Remove(const KeyType& key, NodePtr parent) {
+    void remove(const KeyType& key, NodePtr parent) {
 
       if(root != nullptr) {
 
         if(root->key == key) {
-          RemoveRootMatch();
+          removeRootMatch();
       
         } else {
           if(key < parent->key && parent->left != nullptr) {
             if(parent->left->key == key) {
-              RemoveMatch(parent,parent->left,true);
+              removeMatch(parent,parent->left,true);
             } else {
-              Remove(key,parent->left);
+              remove(key,parent->left);
             }            
           } 
           else if(key > parent->key & parent->right != nullptr) {
             if(parent->right->key == key) {
-              RemoveMatch(parent,parent->right,false);
+              removeMatch(parent,parent->right,false);
             } else {
-              Remove(key,parent->right);
+              remove(key,parent->right);
             }            
           }
           else {
@@ -128,7 +141,7 @@ class BSTree {
       }   
     }
 
-    void RemoveRootMatch() {
+    void removeRootMatch() {
       if(root != nullptr) {
         NodePtr temp = root;
         KeyType rootKey = root->key;
@@ -138,7 +151,7 @@ class BSTree {
         if(root->left == nullptr && root->right == nullptr) {
           root = nullptr;
           delete temp;
-          --count;
+          --numberOfNodes;
         }  
 
         // Right child only case
@@ -146,7 +159,7 @@ class BSTree {
           root = root->right;
           temp->right = nullptr;
           delete temp;
-          --count;          
+          --numberOfNodes;          
         }
 
         // Left child only case
@@ -154,13 +167,13 @@ class BSTree {
           root = root->left;
           temp->left = nullptr;
           delete temp; 
-          --count;
+          --numberOfNodes;
         }
  
         // Root has two children
         else {
-          smallestRight = FindSmallest(root->right);
-          Remove(smallestRight, root);
+          smallestRight = getMin(root->right);
+          remove(smallestRight, root);
           root->key = smallestRight;
         }
 
@@ -169,7 +182,7 @@ class BSTree {
       }
     }
 
-    void RemoveMatch(NodePtr parent, NodePtr match, bool isLeft) {
+    void removeMatch(NodePtr parent, NodePtr match, bool isLeft) {
       if(root != nullptr) {
         NodePtr temp;
         KeyType matchKey = match->key;
@@ -180,7 +193,7 @@ class BSTree {
           temp = match;
           isLeft ? parent->left = nullptr : parent->right = nullptr;
           delete temp;
-          --count;
+          --numberOfNodes;
         }
        
         // Has right child only
@@ -188,7 +201,7 @@ class BSTree {
           isLeft ? parent->left = match->right : parent->right = match->right;
           match->right = nullptr;
           delete temp;
-          --count;
+          --numberOfNodes;
         }
 
         // Has left child only
@@ -196,13 +209,13 @@ class BSTree {
           isLeft ? parent->left = match->left : parent->right = match->left;
           match->left = nullptr;
           delete temp;
-          --count;
+          --numberOfNodes;
         }
 
         // Has both children
         else {
-          smallestRight = FindSmallest(match->right);
-          Remove(smallestRight,match);
+          smallestRight = getMin(match->right);
+          remove(smallestRight,match);
           match->key = smallestRight;
         }
 
@@ -212,14 +225,14 @@ class BSTree {
       }
     }
 
-    void Print(NodePtr leaf) {
+    void print(NodePtr leaf) {
       if(root != nullptr) {
         if(leaf->left != nullptr) {
-          Print(leaf->left);
+          print(leaf->left);
         }     
         std::cout << leaf->key << std::endl;   
         if(leaf->right != nullptr) {
-          Print(leaf->right); 
+          print(leaf->right); 
         } 
       }
       else {
@@ -227,9 +240,9 @@ class BSTree {
       }
     }
 
-    KeyType FindSmallest(NodePtr ptr) {
+    KeyType getMin(NodePtr ptr) {
       if(ptr->left != nullptr) {
-        return FindSmallest(ptr->left);
+        return getMin(ptr->left);
       }  
       else {
         return ptr->key;

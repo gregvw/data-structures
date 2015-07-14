@@ -16,9 +16,12 @@ class LinkedList {
 
   public:
 
-    LinkedList() : head(nullptr), current(nullptr), temp(nullptr), size(0) {}
+    LinkedList() : head(nullptr), 
+                   current(nullptr), 
+                   temp(nullptr), 
+                   numberOfNodes(0) {}
 
-    void Add(const DataType& x) {
+    void add(const DataType& x) {
       NodePtr node = new Node(x);
       
       if(head != nullptr) {
@@ -33,10 +36,11 @@ class LinkedList {
       else { // No elements yet
         head = node;
       }
-      ++size;
-    }
+      ++numberOfNodes;
+    }  // add()
 
-    void Remove(const DataType& x) {
+
+    void remove(const DataType& x) {
 
       NodePtr target = nullptr;
       temp = head;
@@ -62,20 +66,93 @@ class LinkedList {
           
         }
         delete target;
-        --size;
+        --numberOfNodes;
       }
   
-    }
+    } // remove()
 
-    unsigned Size() { return size; }
 
-    void Print() {
+    void reverse() {
+
+      if(numberOfNodes > 1) {
+
+        NodePtr ptr = head;
+        current = head->next;
+        temp = nullptr;
+
+        if(current->next != nullptr) {
+          temp = current->next;
+        }
+
+        head->next = nullptr;
+
+        while(temp->next != nullptr) {
+          current->next = ptr;
+          ptr = current;
+          current = temp;
+          temp = temp->next;
+        } 
+        current->next = ptr;
+        head = temp;
+        temp->next = current;
+      }    
+
+    } // reverse()
+
+
+    DataType getMin() {
+
+      if(head != nullptr) {
+        current = head; 
+        DataType minimum = current->data;
+        while(current != nullptr) {
+          if(current->data < minimum) {
+            minimum = current->data;
+          }
+          current = current->next;
+        }       
+        return minimum;  
+      }
+      else {
+        std::cout << "The list is empty" << std::endl;
+        DataType minimum(0); 
+        return minimum;  
+      }
+    } // getMin()
+
+
+    DataType getMax() {
+
+      if(head != nullptr) {
+        current = head; 
+        DataType maximum = current->data;
+        while(current != nullptr) {
+          if(current->data > maximum) {
+            maximum = current->data;
+          }
+          current = current->next;
+        }       
+        return maximum;  
+      }
+      else {
+        std::cout << "The list is empty" << std::endl;
+        DataType maximum(0); 
+        return maximum;  
+      }
+    } // getMax()
+
+
+
+    unsigned size() { return numberOfNodes; }
+
+    void print() {
       current = head;
       while(current != nullptr) {
         std::cout << current->data << std::endl;
         current = current->next;
       }
-    }
+    } // print()
+    
     
 
   private:
@@ -83,7 +160,7 @@ class LinkedList {
     NodePtr head;
     NodePtr current;
     NodePtr temp;
-    unsigned size;
+    unsigned numberOfNodes;
 
 };
 
